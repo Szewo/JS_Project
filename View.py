@@ -1,4 +1,5 @@
 from tkinter import *
+from Product import *
 
 
 class View:
@@ -7,26 +8,114 @@ class View:
 
     def setup(self):
         self.root.title("Automat z napojami")
-        self.root.geometry("800x600")
-
+        self.root.geometry("800x1000")
+        self.root.resizable(False, False)
 
     def main_gui(self):
-        shelf1 = Frame(master=self.root, height=150)
-        shelf1.pack(fill=X)
-        self.product(shelf1, "Produkt1", "30", "5").grid(column=0, row=0)
-        self.product(shelf1, "Produkt2", "30", "5").grid(column=1, row=0)
-        self.product(shelf1, "Produkt3", "30", "5").grid(column=2, row=0)
-        self.product(shelf1, "Produkt4", "30", "5").grid(column=3, row=0)
-        self.product(shelf1, "Produkt5", "30", "5").grid(column=4, row=0)
+        products_frame = Frame(master=self.root, width=800)
+        self.products(products_frame)
+        products_frame.pack(fill=X)
+
+        screen_frame = Frame(master=self.root, width=400, height=150, bg="blue")
+        Label(master=screen_frame)
+        screen_frame.place(x=200, y=600)
+
+        keyboard_frame = Frame(master=self.root, width=200)
+        self.keyboard(keyboard_frame)
+        keyboard_frame.place(x=500, y=780)
+
+        coins_frame = Frame(master=self.root, width=200)
+        self.coins(coins_frame)
+        coins_frame.place(x=200, y=780)
+
+    def keyboard(self, master):
+        buttons = [
+            Button(master=master, text="1"),
+            Button(master=master, text="2"),
+            Button(master=master, text="3"),
+            Button(master=master, text="4"),
+            Button(master=master, text="5"),
+            Button(master=master, text="6"),
+            Button(master=master, text="7"),
+            Button(master=master, text="8"),
+            Button(master=master, text="9"),
+        ]
+        for i, button in enumerate(buttons):
+            button.grid(column=i % 3, row=int(i / 3)+1, sticky="nsew")
+
+        Label(master=master, text="PRODUKT: ").grid(column=0,row=0, columnspan=3, sticky="w", padx=5)
+        Button(master=master, text="0").grid(column=0, row=4, sticky="nsew")
+        Button(master=master, text="R").grid(column=2, row=4, sticky="nsew")
+
+    def coins(self, master):
+        buttons = [
+            Button(master=master, text="0.01 PLN"),
+            Button(master=master, text="0.02 PLN"),
+            Button(master=master, text="0.05 PLN"),
+            Button(master=master, text="0.10 PLN"),
+            Button(master=master, text="0.20 PLN"),
+            Button(master=master, text="0.50 PLN"),
+            Button(master=master, text="1.00 PLN"),
+            Button(master=master, text="2.00 PLN"),
+            Button(master=master, text="5.00 PLN"),
+        ]
+
+        Label(master=master, text="KREDYTY: ").grid(column=0, row=0, columnspan=3, sticky="w", padx=5)
+        for i, button in enumerate(buttons):
+            button.grid(column=i % 3, row=int(i / 3) + 1, sticky="nsew")
+
+    def products(self, master):
+        products_list = [
+            Product("Produkt1", 30),
+            Product("Produkt2", 31),
+            Product("Produkt3", 32),
+            Product("Produkt4", 33),
+            Product("Produkt5", 34),
+            Product("Produkt6", 35),
+            Product("Produkt7", 36),
+            Product("Produkt8", 37),
+            Product("Produkt9", 38),
+            Product("Produkt10", 39),
+            Product("Produkt11", 40),
+            Product("Produkt12", 41),
+            Product("Produkt13", 42),
+            Product("Produkt14", 43),
+            Product("Produkt15", 44),
+            Product("Produkt16", 45),
+            Product("Produkt17", 46),
+            Product("Produkt18", 47),
+            Product("Produkt19", 48),
+            Product("Produkt20", 49),
+            Product("Produkt21", 50),
+        ]
+        for i, product in enumerate(products_list):
+            self.product(master, product.product_name, product.product_number, product.product_quantity) \
+                .grid(column=i % 3, row=int(i / 3), padx=15, pady=5, sticky="nsew")
+
+        master.columnconfigure(0, weight=2)
+        master.columnconfigure(1, weight=2)
+        master.columnconfigure(2, weight=2)
+
+        master.rowconfigure(0, weight=1)
+        master.rowconfigure(1, weight=1)
+        master.rowconfigure(2, weight=1)
+        master.rowconfigure(3, weight=1)
+        master.rowconfigure(4, weight=1)
+        master.rowconfigure(5, weight=1)
+        master.rowconfigure(6, weight=1)
 
     def product(self, master, product_name, product_number, quantity):
-        frame = Frame(master=master, height=150, padx=15)
-        product_label = Label(master=frame, text=product_name)
-        product_info = Label(master=frame, text="Numer produktu " + product_number)
-        product_quantity = Label(master=frame, text="Ilość produktu " + quantity)
-        product_label.grid(column=0, row=0, columnspan=3)
-        product_info.grid(column=0, row=1, columnspan=2)
-        product_quantity.grid(column=0, row=2)
+        frame = LabelFrame(master=master, text=product_name, height=150, padx=15, pady=5)
+        product_info = Label(master=frame, text="Numer produktu")
+        product_quantity = Label(master=frame, text="Ilość produktu")
+        product_number_tx = Label(master=frame, text=product_number)
+        product_quantity_tx = Label(master=frame, text=quantity)
+
+        product_info.grid(column=0, row=1, sticky=W)
+        product_quantity.grid(column=0, row=2, sticky=W)
+        product_number_tx.grid(column=1, row=1, padx=10)
+        product_quantity_tx.grid(column=1, row=2, padx=10)
+
         return frame
 
     def loop(self):
