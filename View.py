@@ -3,8 +3,16 @@ from Product import *
 
 
 class View:
-    def __init__(self, root):
+    def __init__(self, root, vending_machine):
         self.root = root
+        self.vending_machine = vending_machine
+        self.vending_machine_money = DoubleVar()
+
+    def add_money_to_machine(self, value):
+        self.vending_machine.add_credit(value)
+        self.vending_machine_money.set(self.vending_machine.get_money())
+
+
 
     def setup(self):
         self.root.title("Automat z napojami")
@@ -17,7 +25,11 @@ class View:
         products_frame.pack(fill=X)
 
         screen_frame = Frame(master=self.root, width=400, height=150, bg="blue")
-        Label(master=screen_frame)
+        money_text = Label(master=screen_frame, text='KREDYTY: ')
+        money_label = Label(master=screen_frame, textvariable=self.vending_machine_money)
+        money_label.grid(column=1, row=0, columnspan=3)
+        money_text.grid(column=0, row=0)
+
         screen_frame.place(x=200, y=600)
 
         keyboard_frame = Frame(master=self.root, width=200)
@@ -41,9 +53,8 @@ class View:
             Button(master=master, text="9"),
         ]
         for i, button in enumerate(buttons):
-            button.grid(column=i % 3, row=int(i / 3)+1, sticky="nsew")
+            button.grid(column=i % 3, row=int(i / 3) + 1, sticky="nsew")
 
-        Label(master=master, text="PRODUKT: ").grid(column=0,row=0, columnspan=3, sticky="w", padx=5)
         Button(master=master, text="0").grid(column=0, row=4, sticky="nsew")
         Button(master=master, text="R").grid(column=2, row=4, sticky="nsew")
 
@@ -60,7 +71,16 @@ class View:
             Button(master=master, text="5.00 PLN"),
         ]
 
-        Label(master=master, text="KREDYTY: ").grid(column=0, row=0, columnspan=3, sticky="w", padx=5)
+        buttons[0].config(command=lambda: self.add_money_to_machine(0.01))
+        buttons[1].config(command=lambda: self.add_money_to_machine(0.02))
+        buttons[2].config(command=lambda: self.add_money_to_machine(0.05))
+        buttons[3].config(command=lambda: self.add_money_to_machine(0.10))
+        buttons[4].config(command=lambda: self.add_money_to_machine(0.20))
+        buttons[5].config(command=lambda: self.add_money_to_machine(0.50))
+        buttons[6].config(command=lambda: self.add_money_to_machine(1.00))
+        buttons[7].config(command=lambda: self.add_money_to_machine(2.00))
+        buttons[8].config(command=lambda: self.add_money_to_machine(5.00))
+
         for i, button in enumerate(buttons):
             button.grid(column=i % 3, row=int(i / 3) + 1, sticky="nsew")
 
