@@ -12,8 +12,6 @@ class View:
         self.vending_machine.add_credit(value)
         self.vending_machine_money.set(self.vending_machine.get_money())
 
-
-
     def setup(self):
         self.root.title("Automat z napojami")
         self.root.geometry("800x1000")

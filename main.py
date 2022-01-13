@@ -1,9 +1,11 @@
 from View import *
+from VendingMachine import *
 
 
 def main():
     root = Tk()
-    view = View(root)
+    vending_machine = VendingMachine()
+    view = View(root, vending_machine)
     view.setup()
     view.main_gui()
     view.loop()
