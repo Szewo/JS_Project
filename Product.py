@@ -1,5 +1,20 @@
+
+
 class Product:
-    def __init__(self, product_name, product_number, product_quantity=5):
-        self.product_name = product_name
-        self.product_number = product_number
-        self.product_quantity = product_quantity
+    def __init__(self, name, number, price, quantity=5):
+        self.name = name
+        self.number = number
+        self.quantity = quantity
+        self.price = price
+
+    def get_name(self):
+        return self.name
+
+    def get_number(self):
+        return self.number
+
+    def get_price(self):
+        return self.price
+
+    def get_quantity(self):
+        return self.quantity
