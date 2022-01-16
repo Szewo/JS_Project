@@ -10,11 +10,11 @@ class Coin:
 
         :param value: nominał
         """
-        self.value = Decimal(str(value))
+        self.__value = Decimal(str(value))
 
     def get_value(self) -> Decimal:
         """Zwraca nominał monety.
 
         :return: nominał
         """
-        return self.value
+        return self.__value

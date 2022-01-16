@@ -17,67 +17,67 @@ class View:
         :param root: obiekt okna programu,
         :param vending_machine: obiekt automatu.
         """
-        self.root = root
-        self.vending_machine = vending_machine
-        self.money = tk.DoubleVar()
-        self.product_number = tk.IntVar()
-        self.product_quantities = [tk.IntVar() for _ in range(21)]
-        self.vending_machine_message = tk.StringVar()
+        self.__root = root
+        self.__vending_machine = vending_machine
+        self.__money = tk.DoubleVar()
+        self.__product_number = tk.IntVar()
+        self.__product_quantities = [tk.IntVar() for _ in range(21)]
+        self.__vending_machine_message = tk.StringVar()
 
     def add_money_to_machine(self, value):
         """Obsługuje wrzucanie monet do automatu.
 
         :param value: wybrana wartość.
         """
-        self.vending_machine.add_credit(Coin(value))
-        self.money.set(self.vending_machine.get_money())
+        self.__vending_machine.add_credit(Coin(value))
+        self.__money.set(self.__vending_machine.get_money())
 
     def pick_product(self, val):
         """Obsługuje wybór numeru produktu.
 
         :param val: wybrany numer.
         """
-        self.vending_machine.pick_product(val)
-        self.product_number.set(self.vending_machine.product_number)
+        self.__vending_machine.pick_product(val)
+        self.__product_number.set(self.__vending_machine.get_product_number())
 
     def reset_coins(self):
         """Obsługuje wyrzucenie wrzuconych monet."""
-        self.vending_machine.reset_coins()
-        self.money.set(self.vending_machine.get_money())
+        self.__vending_machine.reset_coins()
+        self.__money.set(self.__vending_machine.get_money())
 
     def buy_product(self):
         """Obsługuje zatwierdzenie zakupu produktu."""
-        result = self.vending_machine.buy_product()
-        self.vending_machine_message.set(self.vending_machine.message)
-        self.money.set(self.vending_machine.get_money())
+        result = self.__vending_machine.buy_product()
+        self.__vending_machine_message.set(self.__vending_machine.get_message())
+        self.__money.set(self.__vending_machine.get_money())
         if result:
-            current_quantity = self.product_quantities[
-                self.product_number.get() - PRODUCT_QUANTITY_OFFSET].get()
-            self.product_quantities[
-                self.product_number.get() - PRODUCT_QUANTITY_OFFSET].set(current_quantity - 1)
+            current_quantity = self.__product_quantities[
+                self.__product_number.get() - PRODUCT_QUANTITY_OFFSET].get()
+            self.__product_quantities[
+                self.__product_number.get() - PRODUCT_QUANTITY_OFFSET].set(current_quantity - 1)
 
     def setup(self):
         """Inicjalizuje parametry okna programu."""
-        self.root.title("Automat z napojami")
-        self.root.geometry("800x1000")
-        self.root.resizable(False, False)
+        self.__root.title("Automat z napojami")
+        self.__root.geometry("800x1000")
+        self.__root.resizable(False, False)
 
     def main_gui(self):
         """Inicjalizuje wygląd interfejsu użytkownika."""
-        products_frame = tk.Frame(master=self.root, width=800)
+        products_frame = tk.Frame(master=self.__root, width=800)
         self.products(products_frame)
         products_frame.pack(fill=tk.X)
 
-        screen_frame = tk.Frame(master=self.root, width=400, height=150)
+        screen_frame = tk.Frame(master=self.__root, width=400, height=150)
 
         money_text = tk.Label(master=screen_frame, text='KREDYTY: ')
-        money_label = tk.Label(master=screen_frame, textvariable=self.money)
+        money_label = tk.Label(master=screen_frame, textvariable=self.__money)
 
         product_picker_text = tk.Label(master=screen_frame, text='PRODUKT: ')
-        product_picker_label = tk.Label(master=screen_frame, textvariable=self.product_number)
+        product_picker_label = tk.Label(master=screen_frame, textvariable=self.__product_number)
 
         message_label = tk.Label(master=screen_frame)
-        message_var = tk.Label(master=screen_frame, textvariable=self.vending_machine_message)
+        message_var = tk.Label(master=screen_frame, textvariable=self.__vending_machine_message)
 
         money_label.grid(column=1, row=0, columnspan=3, sticky="W")
         money_text.grid(column=0, row=0, sticky="W")
@@ -90,11 +90,11 @@ class View:
 
         screen_frame.place(x=200, y=750)
 
-        keyboard_frame = tk.Frame(master=self.root, width=200)
+        keyboard_frame = tk.Frame(master=self.__root, width=200)
         self.keyboard(keyboard_frame)
         keyboard_frame.place(x=500, y=850)
 
-        coins_frame = tk.Frame(master=self.root, width=200)
+        coins_frame = tk.Frame(master=self.__root, width=200)
         self.coins(coins_frame)
         coins_frame.place(x=200, y=850)
 
@@ -143,10 +143,10 @@ class View:
 
     def products(self, master):
         """Przygotowuje wygląd listy produktów do wyboru."""
-        for i, product in enumerate(self.vending_machine.available_products.values()):
-            self.product_quantities[i].set(product.get_quantity())
+        for i, product in enumerate(self.__vending_machine.get_available_products().values()):
+            self.__product_quantities[i].set(product.get_quantity())
             self.product(master, product.get_name(), product.get_number(),
-                         self.product_quantities[i], product.get_price()) \
+                         self.__product_quantities[i], product.get_price()) \
                 .grid(column=i % 3, row=int(i / 3), padx=15, pady=5, sticky="nsew")
 
         master.columnconfigure(0, weight=2)
@@ -183,4 +183,4 @@ class View:
 
     def loop(self):
         """Główna pętla programu."""
-        self.root.mainloop()
+        self.__root.mainloop()
