@@ -71,17 +71,17 @@ class VendingMachine:
     def buy_product(self):
         if self.product_number not in self.available_products.keys():
             self.message = "Brak produktu o takim numerze"
-            return
+            return False
 
         product = self.available_products[self.product_number]
 
         if product.get_price() > float(self.inserted_coins.sum_of_coins()):
             self.message = "Za mało kredytów, cena produktu: " + str(product.get_price())
-            return
+            return False
 
         if product.get_quantity() <= 0:
             self.message = "Brak produktu"
-            return
+            return False
 
         rest = abs(round(self.inserted_coins.sum_of_coins() - decimal.Decimal(product.get_price()), 2))
         copy = rest
@@ -96,12 +96,16 @@ class VendingMachine:
                     rest -= value
                 except Exception:
                     break
-        if rest <= 0.:
-            self.available_coins = combined_coins
-            self.message = "Dokonano zakupu za " + str(product.get_price()) + ". Reszta: " + str(copy)
-            self.inserted_coins.reset_coins()
 
-        else:
+        if rest > 0.:
             for coin in returned_coins:
                 self.available_coins.add_coin(coin)
             self.message = "Tylko odliczona kwota"
+            return False
+
+        self.available_coins = combined_coins
+        self.message = "Dokonano zakupu za " + str(product.get_price()) + ". Reszta: " + str(copy)
+        self.inserted_coins.reset_coins()
+        product.remove()
+        return True
+

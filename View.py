@@ -4,6 +4,8 @@ import Coin
 import VendingMachine
 import consts
 
+PRODUCT_QUANTITY_OFFSET = 30
+
 
 class View:
     def __init__(self, root, vending_machine: VendingMachine.VendingMachine):
@@ -11,6 +13,7 @@ class View:
         self.vending_machine = vending_machine
         self.money = DoubleVar()
         self.product_number = IntVar()
+        self.product_quantities = [IntVar() for i in range(21)]
         self.vending_machine_message = StringVar()
 
     def add_money_to_machine(self, value):
@@ -26,9 +29,12 @@ class View:
         self.money.set(self.vending_machine.get_money())
 
     def buy_product(self):
-        self.vending_machine.buy_product()
+        result = self.vending_machine.buy_product()
         self.vending_machine_message.set(self.vending_machine.message)
         self.money.set(self.vending_machine.get_money())
+        if result:
+            current_quantity = self.product_quantities[self.product_number.get() - PRODUCT_QUANTITY_OFFSET].get()
+            self.product_quantities[self.product_number.get() - PRODUCT_QUANTITY_OFFSET].set(current_quantity - 1)
 
     def setup(self):
         self.root.title("Automat z napojami")
@@ -114,7 +120,8 @@ class View:
     def products(self, master):
 
         for i, product in enumerate(self.vending_machine.available_products.values()):
-            self.product(master, product.get_name(), product.get_number(), product.get_quantity(),
+            self.product_quantities[i].set(product.get_quantity())
+            self.product(master, product.get_name(), product.get_number(), self.product_quantities[i],
                          product.get_price()) \
                 .grid(column=i % 3, row=int(i / 3), padx=15, pady=5, sticky="nsew")
 
@@ -135,7 +142,7 @@ class View:
         product_info = Label(master=frame, text="Numer produktu")
         product_quantity = Label(master=frame, text="Ilość produktu")
         product_number_tx = Label(master=frame, text=product_number)
-        product_quantity_tx = Label(master=frame, text=quantity)
+        product_quantity_tx = Label(master=frame, textvariable=quantity)
         product_price = Label(master=frame, text="Cena produktu")
         product_price_tx = Label(master=frame, text=price)
 
