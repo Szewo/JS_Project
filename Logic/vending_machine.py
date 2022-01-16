@@ -33,7 +33,7 @@ class CoinsHolder:
     def get_coin(self, value):
         """Zwraca przechowaną monetę o danym nominale.
 
-        Jeśli ilosć monet o danym nominale wynosi zero, rzuca wyjątek.
+        Jeśli ilość monet o danym nominale wynosi zero, rzuca wyjątek.
         :param value: nominał monety,
         :return: moneta.
         """
@@ -167,28 +167,28 @@ class VendingMachine:
             self.__message = "Brak produktu"
             return False
 
+        return self.__give_rest(product)
+    
+    def __give_rest(self, product):
         rest = abs(round(self.__inserted_coins.sum_of_coins() - Decimal(product.get_price()), 2))
-        copy = rest
-        returned_coins = []
+        original_rest = rest
         combined_coins = self.__available_coins + self.__inserted_coins
 
         for value in reversed(consts.AVAILABLE_COINS):
             value = Decimal(value)
             while value <= rest:
                 try:
-                    returned_coins.append(combined_coins.get_coin(str(value)))
+                    combined_coins.get_coin(str(value))
                     rest -= value
                 except Exception:
                     break
 
         if rest > 0.:
-            for coin in returned_coins:
-                self.__available_coins.add_coin(coin)
             self.__message = "Tylko odliczona kwota"
             return False
 
         self.__available_coins = combined_coins
-        self.__message = "Dokonano zakupu za " + str(product.get_price()) + ". Reszta: " + str(copy)
+        self.__message = "Dokonano zakupu za " + str(product.get_price()) + ". Reszta: " + str(original_rest)
         self.__inserted_coins.reset_coins()
         product.remove()
         return True
